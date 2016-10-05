@@ -110,15 +110,15 @@ public class PlayScreen implements Screen, InputProcessor{
     }
 
     public boolean isCellBlocked(float x, float y){
-        if(collisionLayer.getCell((int)(x/16),(int)(y/16))!=null)
-            return collisionLayer.getCell((int)(x/16),(int)(y/16))
+        if(collisionLayer.getCell((int)(x/32),(int)(y/32))!=null)
+            return collisionLayer.getCell((int)(x/32),(int)(y/32))
                     .getTile().getProperties().containsKey("collidable");
         else
             return false;
     }
 
     public TiledMapTileLayer nextLayer(int[][] caveArray){
-        TiledMapTileLayer returnMe = new TiledMapTileLayer(caveArray.length,caveArray[0].length,16,16);
+        TiledMapTileLayer returnMe = new TiledMapTileLayer(caveArray.length,caveArray[0].length,32,32);
 
         for(int x = 0 ; x < caveArray.length ; x++){
             for(int y = 0 ; y < caveArray[x].length ; y++){
