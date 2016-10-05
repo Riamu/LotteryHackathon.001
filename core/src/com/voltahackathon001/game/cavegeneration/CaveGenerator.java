@@ -16,6 +16,9 @@ public class CaveGenerator {
     private int height;
     private Random random;
 
+    // The seed of this cave generator
+    public long SEED;
+
     //private variables defining cave generation
     private int numSteps = 5; //number of times to step through generation algorithm
     private float probStartAlive = 0.30f; //probability of a cell starting alive
@@ -24,11 +27,28 @@ public class CaveGenerator {
     private int overPopLimit = 10; //>= this number of neighbors cells will start dying
 
     public CaveGenerator(int width, int height) {
+        initGenerator(width, height, false, -1);
+    }
+
+    public CaveGenerator(int width, int height, long seed){
+        initGenerator(width, height, true, seed);
+    }
+
+    private void initGenerator(int width, int height, boolean definedSeed, long seed){
         this.width = width;
         this.height = height;
         cave = new Cell[width][height];
         nextCave = new Cell[width][height];
-        random = new Random();
+
+        if(definedSeed) {
+            random = new Random(seed);
+            this.SEED = seed;
+        }else{
+            // this is definitely the best way to do it
+            long newSeed = (long)(Math.random()*Long.MAX_VALUE);
+            random = new Random(newSeed);
+            this.SEED = newSeed;
+        }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -38,7 +58,7 @@ public class CaveGenerator {
         }
     }
 
-    //getters and setters
+    //getters and setterss
     //width and height
     public int getWidth() {return width;}
     public void setWidth(int width) {this.width = width;}
