@@ -48,12 +48,11 @@ public class PlayScreen implements Screen, InputProcessor{
         map.getLayers().get(0).setVisible(false);
 
         //add player
-        //TODO: Remove hard-coded block size 16
         float offset = 10;
-        float y = 16+offset;
+        float y = collisionLayer.getTileHeight()+offset;
         float x = 0+offset;
         while (isCellBlocked(x,y)){
-            x += 16;
+            x += collisionLayer.getTileWidth();
         }
         camera.position.x = x-offset;
         camera.position.y = y-offset;

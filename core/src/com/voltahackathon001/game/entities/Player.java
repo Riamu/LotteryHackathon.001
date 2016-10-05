@@ -12,7 +12,6 @@ public class Player extends Sprite{
     private final float GRAVITY = 1000f;
     private float ACCELERATION = 1000;
     private final float TOP_SPEED = 600;
-    private float MAX_ACCEL = 5000;
 
     private float jumptimer = 0;
 
@@ -47,19 +46,14 @@ public class Player extends Sprite{
         accel.y = -GRAVITY;
         accel.x = 0;
         if(screen.aPressed){
-            accel.x -=ACCELERATION;
+            accel.x = -ACCELERATION;
         }
         if(screen.dPressed){
-            accel.x += ACCELERATION;
+            accel.x = +ACCELERATION;
         }
-        if(accel.x>MAX_ACCEL){
-            accel.x = MAX_ACCEL;
-        }
-        if(accel.x<-MAX_ACCEL){
-            accel.x = -MAX_ACCEL;
-        }
+
         // apply acceleration to velocity
-        vel.y+=accel.y*delta;
+        vel.y += accel.y*delta;
         vel.x += accel.x*delta;
 
         if(vel.x>0){
@@ -72,7 +66,7 @@ public class Player extends Sprite{
 
         // Cap velocity in both directions to 10
         // TODO TEST ME (maybe have to be combined velocity
-
+        // TODO add ) to above comment
 
         if(vel.x>TOP_SPEED){
             vel.x = TOP_SPEED;
@@ -124,9 +118,12 @@ public class Player extends Sprite{
             }
         }
 
+        collisionY = false;
+
         // move in y
         oldPosY = pos.y;
         pos.y+=vel.y*delta;
+
         // check collision in y
         if(vel.y<0){ // going down (yelling timber)
             collisionY = collidesBottom();
