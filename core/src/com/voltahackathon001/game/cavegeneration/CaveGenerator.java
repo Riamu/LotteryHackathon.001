@@ -68,6 +68,7 @@ public class CaveGenerator {
         }
         fillSides(cave);
         fillBottom(cave);
+        clearHorizLayer(cave, height-2);
         return cave;
     }
 
@@ -149,25 +150,37 @@ public class CaveGenerator {
     private void blank(Cell[][] cellArray) {
         //variety of options for blanks to diversify levels
         double r = random.nextDouble();
-
         if (r < 0.2) {
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    if (i > j-2 && i < j+2) {
-                        cellArray[i][j].setState(0);
-                        cellArray[i][j].setNextState(0);
-                    }
+            //vertical blanks
+            for (int j = 0; j < height/3; j++) {
+                for (int k = -2; k < 2; k++) {
+                    cellArray[width/4+k][j].setState(0);
+                    cellArray[width/4+k][j].setNextState(0);
                 }
             }
-
-            if (height > width) {
-                for (int i = 0; i < width; i++) {
-                    for (int j = height-2; j >= 0; j--) {
-                        if (i+j+2 > height && i+j-2 < height) {
-                            cellArray[i][j].setState(0);
-                            cellArray[i][j].setNextState(0);
-                        }
-                    }
+            for (int j = height/3; j < height*2/3; j++) {
+                for (int k = -2; k < 2; k++) {
+                    cellArray[width/2+k][j].setState(0);
+                    cellArray[width/2+k][j].setNextState(0);
+                }
+            }
+            for (int j = height*2/3; j < height; j++) {
+                for (int k = -2; k < 2; k++) {
+                    cellArray[width*3/4+k][j].setState(0);
+                    cellArray[width*3/4+k][j].setNextState(0);
+                }
+            }
+            //horizontal blanks
+            for (int i = 0; i < width; i++) {
+                for (int k = -2; k < 1; k++) {
+                    cellArray[i][height*2/7+k].setState(0);
+                    cellArray[i][height*2/7+k].setNextState(0);
+                }
+            }
+            for (int i = 0; i < width; i++) {
+                for (int k = -2; k < 1; k++) {
+                    cellArray[i][height*6/7+k].setState(0);
+                    cellArray[i][height*6/7+k].setNextState(0);
                 }
             }
         } else if (r < 0.4) {
@@ -301,6 +314,18 @@ public class CaveGenerator {
         for (int i = 0; i < width; i++) {
             cellArray[i][height-1].setState(1);
             cellArray[i][height-1].setNextState(1);
+        }
+    }
+
+    /**
+     * Clears a layer of walls (excluding right and left edges)
+     * @param cellArray Cell[][] to clear from
+     * @param j vertical index to clear
+     */
+    private void clearHorizLayer(Cell[][] cellArray, int j) {
+        for (int i = 1; i < width-1; i++) {
+            cellArray[i][j].setState(0);
+            cellArray[i][j].setNextState(0);
         }
     }
 
