@@ -11,7 +11,7 @@ import com.voltahackathon001.game.screens.PlayScreen;
 public class Player extends Sprite{
     private final float GRAVITY = 1000f;
     private float ACCELERATION = 1000;
-    private final float TOP_SPEED = 500;
+    private final float TOP_SPEED = 600;
     private float MAX_ACCEL = 5000;
 
     private float jumptimer = 0;
@@ -109,7 +109,7 @@ public class Player extends Sprite{
         // react to collision in x
         if(collisionX){
             pos.x = oldPosX;
-            if(isJumping){
+            if(isJumping&&!collisionY){
                 if(vel.x>0){
                     vel.x = -500;
                     vel.y = 1000;
@@ -141,7 +141,7 @@ public class Player extends Sprite{
         }
 
         if(collisionY&&vel.y==0&&isJumping){
-            vel.y=1000;
+            vel.y=5000;
             isJumping = false;
         }
 
