@@ -68,6 +68,7 @@ public class CaveGenerator {
         }
         fillSides(cave);
         fillBottom(cave);
+        clearHorizLayer(cave, height-2);
         return cave;
     }
 
@@ -301,6 +302,18 @@ public class CaveGenerator {
         for (int i = 0; i < width; i++) {
             cellArray[i][height-1].setState(1);
             cellArray[i][height-1].setNextState(1);
+        }
+    }
+
+    /**
+     * Clears a layer of walls (excluding right and left edges)
+     * @param cellArray Cell[][] to clear from
+     * @param j vertical index to clear
+     */
+    private void clearHorizLayer(Cell[][] cellArray, int j) {
+        for (int i = 1; i < width-1; i++) {
+            cellArray[i][j].setState(0);
+            cellArray[i][j].setNextState(0);
         }
     }
 

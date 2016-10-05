@@ -109,7 +109,7 @@ public class Player extends Sprite{
         // react to collision in x
         if(collisionX){
             pos.x = oldPosX;
-            if(isJumping){
+            if(isJumping && (vel.y < -50 || vel.y > 50)){
                 if(vel.x>0){
                     vel.x = -500;
                     vel.y = 1000;

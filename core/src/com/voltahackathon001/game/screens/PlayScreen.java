@@ -39,7 +39,6 @@ public class PlayScreen implements Screen, InputProcessor{
         map = new TmxMapLoader().load("testmap.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
-        player = new Player(camera.viewportWidth/2,camera.viewportHeight/2,this);
 
         // generate map based on 2D array input
         filledTile = collisionLayer.getCell(0,0).getTile();
@@ -47,6 +46,18 @@ public class PlayScreen implements Screen, InputProcessor{
         map.getLayers().add(layer1);
         collisionLayer = layer1;
         map.getLayers().get(0).setVisible(false);
+
+        //add player
+        //TODO: Remove hard-coded block size 16
+        float offset = 10;
+        float y = 16+offset;
+        float x = 0+offset;
+        while (isCellBlocked(x,y)){
+            x += 16;
+        }
+        camera.position.x = x-offset;
+        camera.position.y = y-offset;
+        player = new Player(x-offset,y-offset,this);
 
         // set up renderer
         Gdx.input.setInputProcessor(this);
