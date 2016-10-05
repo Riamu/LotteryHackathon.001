@@ -28,6 +28,10 @@ public class PlayScreen implements Screen, InputProcessor{
     private TiledMapTile filledTile;
     public boolean aPressed = false;
     public boolean dPressed = false;
+    public boolean leftPressed = false;
+    public boolean rightPressed = false;
+    public boolean upPressed = false;
+    public boolean downPressed = false;
 
     private Vector3 playerPos = new Vector3();
     public PlayScreen(CaveGame game){
@@ -50,10 +54,10 @@ public class PlayScreen implements Screen, InputProcessor{
         //add player
         //TODO: Remove hard-coded block size 16
         float offset = 10;
-        float y = 16+offset;
+        float y = collisionLayer.getTileHeight()+offset;
         float x = 0+offset;
         while (isCellBlocked(x,y)){
-            x += 16;
+            x += collisionLayer.getTileWidth();
         }
         camera.position.x = x-offset;
         camera.position.y = y-offset;
@@ -72,18 +76,19 @@ public class PlayScreen implements Screen, InputProcessor{
 
         camera.project(playerPos);
 
+        //TODO: UNDO CAMERA CHANGES
         player.update(delta);
         if(player.getX() - camera.position.x > 0){ // player on right bound
-            camera.translate((player.getVelX())*delta,0);
+            camera.translate(10,0);
         }else if(player.getX() - camera.position.x < 0){
-            camera.translate((player.getVelX())*delta,0);
+            camera.translate(-10,0);
         }
         if(player.getY() - camera.position.y >
                 camera.viewportHeight-camera.viewportHeight/1.05){
-            camera.translate(0,player.getVelY()*delta);
+            camera.translate(0,10);
         }else if(player.getY()-camera.position.y <
                 camera.viewportHeight / 1.2 - camera.viewportHeight){
-            camera.translate(0,player.getVelY()*delta);
+            camera.translate(0,-10);
         }
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
@@ -106,6 +111,16 @@ public class PlayScreen implements Screen, InputProcessor{
         else if(keycode==Input.Keys.D){
             dPressed = true;
         }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = true;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = true;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = true;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = true;
+        }
         return false;
     }
 
@@ -116,6 +131,16 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = false;
+        }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = false;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = false;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = false;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = false;
         }
         return false;
     }
