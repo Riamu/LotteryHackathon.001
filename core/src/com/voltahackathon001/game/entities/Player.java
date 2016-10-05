@@ -14,7 +14,6 @@ public class Player extends Sprite{
     private final float GRAVITY = 1000f;
     private float ACCELERATION = 1000;
     private final float TOP_SPEED = 600;
-    private final float MAX_ACCEL = 5000;
 
     private float ANIMATION_SPEED = 0.1f;
     private float jumptimer = 0;
@@ -63,30 +62,22 @@ public class Player extends Sprite{
 
         // if a is pressed we accelerate in x towards the left
         if(screen.aPressed){
-            accel.x -=ACCELERATION;
             if(!flying) {
                 animation = runleft;
             }
-
+            accel.x = -ACCELERATION;
         }
+
         // if d is pressed we accelerate in x towards the right
         if(screen.dPressed){
-            accel.x += ACCELERATION;
+            accel.x = ACCELERATION;
             if(!flying) {
                 animation = runright;
             }
-
-        }
-        // cap our accel
-        if(accel.x>MAX_ACCEL){
-            accel.x = MAX_ACCEL;
-        }
-        if(accel.x<-MAX_ACCEL){
-            accel.x = -MAX_ACCEL;
         }
 
         // apply acceleration to velocity
-        vel.y+=accel.y*delta;
+        vel.y += accel.y*delta;
         vel.x += accel.x*delta;
 
         // decay our x velocity stuff
@@ -98,6 +89,7 @@ public class Player extends Sprite{
         }
 
         // cap velocity in both direction
+        // TODO TEST ME (maybe have to be combined velocity)
         if(vel.x>TOP_SPEED){
             vel.x = TOP_SPEED;
         }
@@ -154,9 +146,12 @@ public class Player extends Sprite{
             }
         }
 
+        collisionY = false;
+
         // move in y
         oldPosY = pos.y;
         pos.y+=vel.y*delta;
+
         // check collision in y
         if(vel.y<0){ // going down (yelling timber)
             collisionY = collidesBottom();
