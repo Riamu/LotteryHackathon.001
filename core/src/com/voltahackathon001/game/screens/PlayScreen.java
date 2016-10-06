@@ -20,6 +20,11 @@ import com.voltahackathon001.game.cavegeneration.Cell;
 import com.voltahackathon001.game.entities.Player;
 import com.voltahackathon001.game.music.MusicPlayer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 public class PlayScreen implements Screen, InputProcessor{
     private OrthographicCamera camera;
     private CaveGame game;
@@ -29,6 +34,9 @@ public class PlayScreen implements Screen, InputProcessor{
     private CaveGenerator cg;
     public TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer layer1,bottomLayer;
+    private static ArrayList<String> adjs;
+    private static ArrayList<String> nouns;
+    private String levelName;
 
     private float numOfChunks = 1;
     // music
@@ -51,6 +59,7 @@ public class PlayScreen implements Screen, InputProcessor{
 
     // PlayScreen constructor initializes our Game World and such
     public PlayScreen(CaveGame game){
+        loadWordsForTitle();
         // for now check if the clipboard contains a long (and assume it's a seed), later move
         // this to the menu
         boolean foundSeed = false;
@@ -98,6 +107,7 @@ public class PlayScreen implements Screen, InputProcessor{
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
 
         // generate layer based on our cave generation
+
         bottomLayer = (TiledMapTileLayer)map.getLayers().get(0);
         filledTile = bottomLayer.getCell(0,0).getTile();
         layer1 = nextLayer(cg.getCaveInt());
@@ -126,8 +136,25 @@ public class PlayScreen implements Screen, InputProcessor{
         Gdx.input.setInputProcessor(this);
     }
 
-    private void generateName(long seed){
+    private void loadWordsForTitle(){
+        try {
+            Scanner file = new Scanner(new File("adjectives.txt"));
+            while(file.hasNext()){
+                adjs.add(file.nextLine());
+            }
+            file.close();
+            file = new Scanner(new File("nouns.txt"));
+            while(file.hasNext()){
+                nouns.add(file.nextLine());
+            }
+            file.close();
+        }catch(FileNotFoundException e){
+            System.err.println("no");
+        }
+    }
 
+    private void generateName(long seed){
+        levelName = adjs.get((int)(Math.random()*adjs.size())) + adjs.get((int)(Math.random()*adjs.size())) + nouns.get((int)(Math.random()*nouns.size()));
     }
 
     @Override
@@ -187,13 +214,10 @@ public class PlayScreen implements Screen, InputProcessor{
         game.batch.setProjectionMatrix(camera.combined);
 
         // draw the background first
-        //drawBackground();
+        drawBackground();
 
         // set TiledMap renderer view to camera
         renderer.setView(camera);
-        game.batch.begin();
-        renderer.renderImageLayer(new TiledMapImageLayer(new TextureRegion(background), 0, 0));
-        game.batch.end();
         // render tiledMap
         renderer.render();
 
@@ -206,7 +230,7 @@ public class PlayScreen implements Screen, InputProcessor{
     private void drawBackground(){
         game.batch.begin();
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        game.batch.draw(background,0,0);
+        game.batch.draw(background,-1000,-1000,-1000 - (int)camera.position.x,-1000 + (int)camera.position.y,5000,5000);
         game.batch.end();
     }
 
