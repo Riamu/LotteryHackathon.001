@@ -136,6 +136,11 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = true;
+        }else if(keycode == Input.Keys.Q){
+            collisionLayer = nextLayer(cg.getNextInt(),collisionLayer);
+            collisionLayer.setVisible(true);
+            //map.getLayers().remove(1);
+            map.getLayers().add(collisionLayer);
         }
         //TODO: REMOVE
         else if(keycode==Input.Keys.LEFT) {
@@ -195,6 +200,30 @@ public class PlayScreen implements Screen, InputProcessor{
                     returnMe.getCell(x, 99-y).setTile(filledTile); // add a new tile to that cell
                 }
 
+            }
+        }
+        return returnMe;
+    }
+    // get layers after the initial layer
+    public TiledMapTileLayer nextLayer(int[][] caveArray, TiledMapTileLayer oldLayer){
+        TiledMapTileLayer returnMe =
+                new TiledMapTileLayer(caveArray.length+oldLayer.getWidth(),caveArray[0].length+oldLayer.getHeight(),32,32);
+        for(int x = 0 ; x < oldLayer.getWidth(); x++){
+            for(int y = 0 ; y < oldLayer.getHeight() ; y++){
+                if(oldLayer.getCell(x,y)!=null){
+                    returnMe.setCell(x, returnMe.getHeight()-1, new TiledMapTileLayer.Cell());
+                    returnMe.getCell(x, returnMe.getHeight()-1).setTile(filledTile);
+                }
+
+            }
+        }
+        for(int x = oldLayer.getWidth() ; x < oldLayer.getWidth() ; x++){
+            for(int y = oldLayer.getHeight() ; y < oldLayer.getHeight()+caveArray[x].length ; y++){
+                if(caveArray[x][y]==1) {
+                    // Y values have to be reversed because libGDX is y-up and this array is y-down
+                    returnMe.setCell(x, returnMe.getHeight()-y,new TiledMapTileLayer.Cell()); // create a new cell
+                    returnMe.getCell(x, returnMe.getHeight()-y).setTile(filledTile); // add a new tile to that cell
+                }
             }
         }
         return returnMe;
