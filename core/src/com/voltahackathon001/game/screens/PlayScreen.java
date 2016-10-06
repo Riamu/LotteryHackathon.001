@@ -162,7 +162,7 @@ public class PlayScreen implements Screen, InputProcessor{
 
     private void generateName(long seed){
         Random rand = new Random(seed);
-        levelName = adjs.get(rand.nextInt(adjs.size())) + " " + adjs.get(rand.nextInt(adjs.size())) + " " + nouns.get(rand.nextInt(nouns.size()));
+        levelName = adjs.get(rand.nextInt(adjs.size())) + " " + adjs.get(rand.nextInt(adjs.size())) + " " + nouns.get(rand.nextInt(nouns.size())) + "\nSeed: " + seed;
     }
 
     @Override
@@ -225,7 +225,7 @@ public class PlayScreen implements Screen, InputProcessor{
     private void drawBackground(){
         game.batch.begin();
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        game.batch.draw(background,-1000,-1000,-1000 - (int)camera.position.x,-1000 + (int)camera.position.y,5000,5000);
+        game.batch.draw(background,-1000,-1000,-1000 - (int)camera.position.x,-1000 + (int)camera.position.y,500000,500000);
         game.batch.end();
     }
 
