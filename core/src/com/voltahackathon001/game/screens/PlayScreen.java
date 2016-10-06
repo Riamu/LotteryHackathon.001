@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
@@ -23,6 +24,7 @@ import com.voltahackathon001.game.music.MusicPlayer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class PlayScreen implements Screen, InputProcessor{
@@ -37,6 +39,8 @@ public class PlayScreen implements Screen, InputProcessor{
     private static ArrayList<String> adjs;
     private static ArrayList<String> nouns;
     private String levelName;
+
+    private BitmapFont font;
 
     private float numOfChunks = 1;
     // music
@@ -60,6 +64,7 @@ public class PlayScreen implements Screen, InputProcessor{
     // PlayScreen constructor initializes our Game World and such
     public PlayScreen(CaveGame game){
         loadWordsForTitle();
+        font = new BitmapFont();
         // for now check if the clipboard contains a long (and assume it's a seed), later move
         // this to the menu
         boolean foundSeed = false;
@@ -138,6 +143,8 @@ public class PlayScreen implements Screen, InputProcessor{
 
     private void loadWordsForTitle(){
         try {
+            adjs = new ArrayList<String>();
+            nouns = new ArrayList<String>();
             Scanner file = new Scanner(new File("adjectives.txt"));
             while(file.hasNext()){
                 adjs.add(file.nextLine());
@@ -154,7 +161,8 @@ public class PlayScreen implements Screen, InputProcessor{
     }
 
     private void generateName(long seed){
-        levelName = adjs.get((int)(Math.random()*adjs.size())) + adjs.get((int)(Math.random()*adjs.size())) + nouns.get((int)(Math.random()*nouns.size()));
+        Random rand = new Random(seed);
+        levelName = adjs.get(rand.nextInt(adjs.size())) + " " + adjs.get(rand.nextInt(adjs.size())) + " " + nouns.get(rand.nextInt(nouns.size()));
     }
 
     @Override
@@ -209,7 +217,8 @@ public class PlayScreen implements Screen, InputProcessor{
 
         // Draw things
         game.batch.begin();
-            game.batch.draw(player.getAnimation().getKeyFrame(elapsedTime, true),player.getX(),player.getY());
+            game.batch.draw(player.getAnimation().getKeyFrame(elapsedTime, true), player.getX(), player.getY());
+            font.draw(game.batch, levelName, 0, 0);
         game.batch.end();
     }
 
