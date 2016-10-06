@@ -100,7 +100,7 @@ public class Player extends Sprite{
             vel.y = -TOP_SPEED;
         }
         if(vel.x<-TOP_SPEED){
-            vel.y = -TOP_SPEED;
+            vel.x = -TOP_SPEED;
         }
 
         // if our velocity is sufficiently low, just stop movement
