@@ -30,6 +30,7 @@ public class PlayScreen implements Screen, InputProcessor{
     public TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer layer1,bottomLayer;
 
+    private float numOfChunks = 1;
     // music
     MusicPlayer music;
 
@@ -136,6 +137,10 @@ public class PlayScreen implements Screen, InputProcessor{
         music.update();
         elapsedTime+=delta;
 
+        // check if player is above the midpoint of the layer
+        if(player.getY()>(collisionLayer.getHeight()*16-(50*16))){
+            addNewChunk();
+        }
         // flush screen
         Gdx.gl20.glClearColor(bareColour.r, bareColour.g, bareColour.b, bareColour.a);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -148,6 +153,20 @@ public class PlayScreen implements Screen, InputProcessor{
 
         player.update(delta);
 
+        //TODO: REMOVE FLYING CAMERA
+//        if(player.getX() - camera.position.x > 0){ // player on right bound
+//            camera.translate(10,0);
+//        }else if(player.getX() - camera.position.x < 0){ // player on left bound
+//            camera.translate(-10,0);
+//        }
+//        if(player.getY() - camera.position.y >
+//                camera.viewportHeight-camera.viewportHeight/1.05){ // player on bottom bound
+//            camera.translate(0,10);
+//        }else if(player.getY()-camera.position.y <
+//                camera.viewportHeight / 1.2 - camera.viewportHeight){ // player on top bound
+//            camera.translate(0,-10);
+//        }
+        //TODO: UNCOMMENT
         // Move camera if the player is on camera bounds
         if(player.getX() - camera.position.x > 0){ // player on right bound
             camera.translate((player.getVelX())*delta,0);
@@ -270,7 +289,7 @@ public class PlayScreen implements Screen, InputProcessor{
     }
     // get layers after the initial layer
     public TiledMapTileLayer nextLayer(int[][] caveArray, TiledMapTileLayer oldLayer){
-        TiledMapTileLayer returnMe = new TiledMapTileLayer(oldLayer.getWidth(),oldLayer.getHeight(),32,32);
+        TiledMapTileLayer returnMe = new TiledMapTileLayer(oldLayer.getWidth(),oldLayer.getHeight()+caveArray[0].length,32,32);
 
         for(int x = 0 ; x < oldLayer.getWidth() ; x++){
             for(int y = 0 ; y < oldLayer.getHeight() ; y++){
@@ -280,14 +299,16 @@ public class PlayScreen implements Screen, InputProcessor{
                 }
             }
         }
-        for(int x = oldLayer.getWidth() ; x < caveArray.length ; x++){
-            for(int y = oldLayer.getHeight() ; y < caveArray[x].length ; y++){
-                if(caveArray[x][y] == 1){
-                    returnMe.setCell(x, returnMe.getHeight()-y, new TiledMapTileLayer.Cell());
-                    returnMe.getCell(x, returnMe.getHeight()-y).setTile(filledTile);
+        for(int x = 0 ; x < caveArray.length ; x++){
+            for(int y = 0 ; y < caveArray[x].length ; y++){
+                if(caveArray[x][caveArray[x].length-1-y] == 1){
+                    returnMe.setCell(x, returnMe.getHeight()-1-y, new TiledMapTileLayer.Cell());
+
+                    returnMe.getCell(x, returnMe.getHeight()-1-y).setTile(filledTile);
                 }
             }
         }
+        //Gdx.app.log("(x,y): ","("+returnMe.getWidth()+","+returnMe.getHeight()+")");
         return returnMe;
     }
 
@@ -297,6 +318,8 @@ public class PlayScreen implements Screen, InputProcessor{
         map.getLayers().remove(1);
         map.getLayers().add(newLayer);
         collisionLayer = newLayer;
+        numOfChunks++;
+        Gdx.app.log("gened a new chunk",player.getX()+","+player.getY());
     }
     @Override
     public void show() {
@@ -326,6 +349,9 @@ public class PlayScreen implements Screen, InputProcessor{
     @Override
     public void dispose() {
         music.turnDownForWhat();
+        jumpermanAtlas.dispose();
+        map.dispose();
+        background.dispose();
     }
 
     @Override
