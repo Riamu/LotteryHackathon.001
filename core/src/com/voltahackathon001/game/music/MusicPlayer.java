@@ -13,14 +13,20 @@ import javax.sound.midi.Synthesizer;
  */
 public class MusicPlayer {
 
-    public static long SEED;
-    private static final double INTERVAL = 0.01;
-    private static double elapsed;
+    // Notes are C, D, E, G, A, C1 (pentatonic scale)
+    public static final int[] NOTES = {16, 18, 21, 24, 27, 33};
+
+    public long SEED;
+    private final long MAIN_INTERVAL_MS = 3600;
+    private long elapsed;
+    private long lastTime;
     private Random random;
     private int lastNote = 0;
+    // the number of notes to play in a beat
+    private int notes;
+    private int notesLeft;
 
     private boolean playing;
-    private float lastDelta;
 
     private Synthesizer synth;
     private MidiChannel[] channels;
@@ -32,6 +38,10 @@ public class MusicPlayer {
         random = new Random(seed);
 
         elapsed = 0;
+        lastTime = System.currentTimeMillis();
+
+        notes = (int)Math.pow(2, random.nextInt(3)+1);
+        notesLeft = notes;
 
         try {
             synth = MidiSystem.getSynthesizer();
@@ -52,18 +62,35 @@ public class MusicPlayer {
     // stop the music
     public void turnDownForWhat(){
         playing = false;
+        channels[0].noteOff(lastNote);
     }
 
-    public void update(float delta){
+    // toggle music on/off
+    public void switchItUp(){
+        if(playing){
+            turnDownForWhat();
+        }else{
+            pumpUpTheMusic();
+        }
+    }
+
+    public void update(){
         if(playing) {
-            if (elapsed >= INTERVAL) {
+            if (elapsed >= MAIN_INTERVAL_MS/notes) {
+                notesLeft--;
+                if(notesLeft == 0){
+                    // decide how many notes to play this time from {1,2,4}
+                    notes = (int)Math.pow(2, random.nextInt(3));
+                    notesLeft = notes;
+                }
                 elapsed = 0;
-                channels[0].noteOff(lastNote,500);
-                lastNote = random.nextInt(50);
+                channels[0].noteOff(lastNote);
+                lastNote = NOTES[random.nextInt(6)];
                 channels[0].noteOn(lastNote,500);
             }
-            elapsed += Math.abs(delta - lastDelta);
-            lastDelta = delta;
+            long nowTime = System.currentTimeMillis();
+            elapsed += nowTime - lastTime;
+            lastTime = nowTime;
         }
     }
 }

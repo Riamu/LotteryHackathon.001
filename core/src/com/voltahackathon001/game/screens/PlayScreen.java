@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Clipboard;
 import com.voltahackathon001.game.CaveGame;
 import com.voltahackathon001.game.cavegeneration.CaveGenerator;
 import com.voltahackathon001.game.cavegeneration.Cell;
@@ -29,6 +32,9 @@ public class PlayScreen implements Screen, InputProcessor{
     // music
     MusicPlayer music;
 
+    private Texture background;
+    private Color bareColour;
+
     private TextureAtlas jumpermanAtlas;
     private float elapsedTime = 0;
     private TiledMapTile filledTile;
@@ -43,17 +49,44 @@ public class PlayScreen implements Screen, InputProcessor{
 
     // PlayScreen constructor initializes our Game World and such
     public PlayScreen(CaveGame game){
+        // for now check if the clipboard contains a long (and assume it's a seed), later move
+        // this to the menu
+        boolean foundSeed = false;
+        long desiredSeed = -1;
+        String clippy = Gdx.app.getClipboard().getContents();
+        try {
+            desiredSeed = Long.parseLong(clippy);
+            foundSeed = true;
+            System.out.println("Found seed " + desiredSeed + ".");
+        } catch(NumberFormatException e){
+            System.out.println("Did not detect user desired seed.");
+        }
+
         // cave generator object, we initialize with 40 width and 100 height
-        cg = new CaveGenerator(40,100);
+        if(foundSeed) {
+            cg = new CaveGenerator(40, 100, desiredSeed);
+        }else{
+            cg = new CaveGenerator(40, 100);
+        }
 
         music = new MusicPlayer(cg.SEED);
         music.pumpUpTheMusic();
+
+        System.out.println("Cave generation and music seed is " + cg.SEED);
 
         this.game = game;
 
         // init camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false,800,400);
+
+        // load the background
+        background = new Texture(Gdx.files.internal("background.png"));
+        // make the background a repeating texture
+        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        //colour to display outside of the rendered cave
+        bareColour = new Color(20/255f, 0f, 30/255f, 0f);
 
         // init map to our single tile map
         map = new TmxMapLoader().load("testmap.tmx");
@@ -84,19 +117,19 @@ public class PlayScreen implements Screen, InputProcessor{
         // init playerObject
         player = new Player(x,y,this,jumpermanAtlas);
 
-        // set up renderer
+        // set input processor
         Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
-        // elapsed time is total game time let's hope the player doesn't play for like 2 billion seconds because
-        // then we'll overflow
-        music.update(delta);
+        // elapsed time is total game time let's hope the player doesn't play for like 340
+        // sextillion seconds because then we'll overflow
+        music.update();
         elapsedTime+=delta;
 
         // flush screen
-        Gdx.gl20.glClearColor(1,1,1,0);
+        Gdx.gl20.glClearColor(bareColour.r, bareColour.g, bareColour.b, bareColour.a);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // get and set player positions
@@ -125,6 +158,10 @@ public class PlayScreen implements Screen, InputProcessor{
         camera.update();
         // set the batch projection matrix so libGDX knows where to place things
         game.batch.setProjectionMatrix(camera.combined);
+
+        // draw the background first
+        drawBackground();
+
         // set TiledMap renderer view to camera
         renderer.setView(camera);
         // render tiledMap
@@ -133,6 +170,12 @@ public class PlayScreen implements Screen, InputProcessor{
         // Draw things
         game.batch.begin();
             game.batch.draw(player.getAnimation().getKeyFrame(elapsedTime, true),player.getX(),player.getY());
+        game.batch.end();
+    }
+
+    private void drawBackground(){
+        game.batch.begin();
+        game.batch.draw(background,0,0);
         game.batch.end();
     }
 
@@ -161,6 +204,8 @@ public class PlayScreen implements Screen, InputProcessor{
             upPressed = true;
         } else if (keycode==Input.Keys.DOWN) {
             downPressed = true;
+        }else if (keycode == Input.Keys.M) {
+            music.switchItUp();
         }
         return false;
     }

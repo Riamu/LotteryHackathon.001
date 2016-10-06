@@ -70,10 +70,10 @@ public class Player extends Sprite{
 
         // if d is pressed we accelerate in x towards the right
         if(screen.dPressed){
-            accel.x = ACCELERATION;
             if(!flying) {
                 animation = runright;
             }
+            accel.x = ACCELERATION;
         }
 
         // apply acceleration to velocity
@@ -105,10 +105,11 @@ public class Player extends Sprite{
 
         // if our velocity is sufficiently low, just stop movement
         // this prevents gliding on surfaces
-        if(Math.abs(vel.y)<1f){
+        final float GLIDE_PREVENTION = 4f;
+        if(Math.abs(vel.y)<GLIDE_PREVENTION){
             vel.y=0;
         }
-        if(Math.abs(vel.x)<1f){
+        if(Math.abs(vel.x)<GLIDE_PREVENTION){
             vel.x=0;
         }
 
