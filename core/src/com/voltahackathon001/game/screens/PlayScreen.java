@@ -212,6 +212,8 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if (keycode == Input.Keys.M) {
             music.switchItUp();
+        }else if(keycode == Input.Keys.ESCAPE){
+            Gdx.app.exit();
         }
         return false;
     }
