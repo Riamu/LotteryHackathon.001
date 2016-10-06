@@ -153,20 +153,6 @@ public class PlayScreen implements Screen, InputProcessor{
 
         player.update(delta);
 
-        //TODO: REMOVE FLYING CAMERA
-//        if(player.getX() - camera.position.x > 0){ // player on right bound
-//            camera.translate(10,0);
-//        }else if(player.getX() - camera.position.x < 0){ // player on left bound
-//            camera.translate(-10,0);
-//        }
-//        if(player.getY() - camera.position.y >
-//                camera.viewportHeight-camera.viewportHeight/1.05){ // player on bottom bound
-//            camera.translate(0,10);
-//        }else if(player.getY()-camera.position.y <
-//                camera.viewportHeight / 1.2 - camera.viewportHeight){ // player on top bound
-//            camera.translate(0,-10);
-//        }
-        //TODO: UNCOMMENT
         // Move camera if the player is on camera bounds
         if(player.getX() - camera.position.x > 0){ // player on right bound
             camera.translate((player.getVelX())*delta,0);
@@ -220,19 +206,11 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = true;
-        }else if(keycode == Input.Keys.Q){
+        }
+        else if(keycode == Input.Keys.Q){
             addNewChunk();
         }
-        //TODO: REMOVE
-        else if(keycode==Input.Keys.LEFT) {
-            leftPressed = true;
-        } else if(keycode==Input.Keys.RIGHT) {
-            rightPressed = true;
-        } else if(keycode==Input.Keys.UP) {
-            upPressed = true;
-        } else if (keycode==Input.Keys.DOWN) {
-            downPressed = true;
-        }else if (keycode == Input.Keys.M) {
+        else if (keycode == Input.Keys.M) {
             music.switchItUp();
         }else if(keycode == Input.Keys.ESCAPE){
             Gdx.app.exit();
@@ -248,16 +226,7 @@ public class PlayScreen implements Screen, InputProcessor{
         else if(keycode==Input.Keys.D){
             dPressed = false;
         }
-        //TODO: REMOVE
-        else if(keycode==Input.Keys.LEFT) {
-            leftPressed = false;
-        } else if(keycode==Input.Keys.RIGHT) {
-            rightPressed = false;
-        } else if(keycode==Input.Keys.UP) {
-            upPressed = false;
-        } else if (keycode==Input.Keys.DOWN) {
-            downPressed = false;
-        }
+        
         return false;
     }
 

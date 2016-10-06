@@ -11,7 +11,6 @@ import com.voltahackathon001.game.screens.PlayScreen;
 
 public class Player extends Sprite{
     // physics constants
-    //TODO: RE-ADD GRAVITY
     private final float GRAVITY = 1000f;
     private float ACCELERATION = 1000;
     private final float TOP_SPEED = 600;
@@ -178,21 +177,6 @@ public class Player extends Sprite{
         // set sprite position
         setX(pos.x);
         setY(pos.y);
-
-        //TODO: REMOVE
-//        if (screen.leftPressed) {
-//            pos.x -= 10;
-//            setX(pos.x);
-//        } else if (screen.rightPressed) {
-//            pos.x += 10;
-//            setX(pos.x);
-//        } else if (screen.upPressed) {
-//            pos.y += 10;
-//            setY(pos.y);
-//        } else if (screen.downPressed) {
-//            pos.y -= 10;
-//            setY(pos.y);
-//        }
     }
 
 
