@@ -247,9 +247,10 @@ public class PlayScreen implements Screen, InputProcessor{
             music.switchItUp();
         }else if(keycode == Input.Keys.ESCAPE){
             Gdx.app.exit();
-        }else if(keycode == Input.Keys.P){
+        }/*else if(keycode == Input.Keys.P){
             game.restart();
         }
+        */
         return false;
     }
 
