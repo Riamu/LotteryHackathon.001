@@ -140,19 +140,33 @@ public class PlayScreen implements Screen, InputProcessor{
 
         player.update(delta);
 
-        // Move camera if the player is on camera bounds
+        //TODO: REMOVE FLYING CAMERA
         if(player.getX() - camera.position.x > 0){ // player on right bound
-            camera.translate((player.getVelX())*delta,0);
+            camera.translate(10,0);
         }else if(player.getX() - camera.position.x < 0){ // player on left bound
-            camera.translate((player.getVelX())*delta,0);
+            camera.translate(-10,0);
         }
         if(player.getY() - camera.position.y >
                 camera.viewportHeight-camera.viewportHeight/1.05){ // player on bottom bound
-            camera.translate(0,player.getVelY()*delta);
+            camera.translate(0,10);
         }else if(player.getY()-camera.position.y <
                 camera.viewportHeight / 1.2 - camera.viewportHeight){ // player on top bound
-            camera.translate(0,player.getVelY()*delta);
+            camera.translate(0,-10);
         }
+        //TODO: UNCOMMENT
+        // Move camera if the player is on camera bounds
+//        if(player.getX() - camera.position.x > 0){ // player on right bound
+//            camera.translate((player.getVelX())*delta,0);
+//        }else if(player.getX() - camera.position.x < 0){ // player on left bound
+//            camera.translate((player.getVelX())*delta,0);
+//        }
+//        if(player.getY() - camera.position.y >
+//                camera.viewportHeight-camera.viewportHeight/1.05){ // player on bottom bound
+//            camera.translate(0,player.getVelY()*delta);
+//        }else if(player.getY()-camera.position.y <
+//                camera.viewportHeight / 1.2 - camera.viewportHeight){ // player on top bound
+//            camera.translate(0,player.getVelY()*delta);
+//        }
 
         // camera has to be updated every loop because we move it
         camera.update();

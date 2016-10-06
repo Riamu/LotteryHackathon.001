@@ -11,8 +11,9 @@ import com.voltahackathon001.game.screens.PlayScreen;
 
 public class Player extends Sprite{
     // physics constants
-    private final float GRAVITY = 1000f;
-    private float ACCELERATION = 1000;
+    //TODO: RE-ADD GRAVITY
+    private final float GRAVITY = 000f;
+    private float ACCELERATION = 000;
     private final float TOP_SPEED = 600;
 
     private float ANIMATION_SPEED = 0.1f;

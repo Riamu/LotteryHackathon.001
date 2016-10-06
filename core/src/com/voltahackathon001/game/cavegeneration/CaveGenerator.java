@@ -177,7 +177,6 @@ public class CaveGenerator {
     private void blank(Cell[][] cellArray) {
         //variety of options for blanks to diversify levels
         double r = random.nextDouble();
-        r = 0.9;
         if (r < 0.2) {
             //vertical blanks
             for (int j = 0; j < height/3; j++) {
