@@ -14,7 +14,8 @@ import javax.sound.midi.Synthesizer;
 public class MusicPlayer {
 
     // Notes are C, D, E, G, A, C1 (pentatonic scale)
-    public static final int[] NOTES = {16, 18, 21, 24, 27, 33};
+    public static final float[] NOTES = {16.35f, 18.35f, 20.60f, 24.50f, 27.50f, 32.70f};
+    public static final int OCTAVE = 2;
 
     public long SEED;
     private final long MAIN_INTERVAL_MS = 3600;
@@ -85,8 +86,9 @@ public class MusicPlayer {
                 }
                 elapsed = 0;
                 channels[0].noteOff(lastNote);
-                lastNote = NOTES[random.nextInt(6)];
-                channels[0].noteOn(lastNote,500);
+                lastNote = (int)(NOTES[random.nextInt(6)]*OCTAVE);
+                channels[0].setChannelPressure(0);
+                channels[0].noteOn(lastNote,50);
             }
             long nowTime = System.currentTimeMillis();
             elapsed += nowTime - lastTime;
