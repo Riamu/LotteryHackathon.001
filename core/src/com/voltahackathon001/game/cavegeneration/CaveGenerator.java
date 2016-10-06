@@ -111,6 +111,7 @@ public class CaveGenerator {
             step(nextCave);
         }
         fillSides(nextCave);
+        clearHorizLayer(cave, height-1);
         cave = nextCave;
         return cave;
     }
