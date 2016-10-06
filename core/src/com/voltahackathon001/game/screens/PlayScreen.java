@@ -13,6 +13,7 @@ import com.voltahackathon001.game.CaveGame;
 import com.voltahackathon001.game.cavegeneration.CaveGenerator;
 import com.voltahackathon001.game.cavegeneration.Cell;
 import com.voltahackathon001.game.entities.Player;
+import com.voltahackathon001.game.music.MusicPlayer;
 
 public class PlayScreen implements Screen, InputProcessor{
     private OrthographicCamera camera;
@@ -24,6 +25,8 @@ public class PlayScreen implements Screen, InputProcessor{
     public TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer layer0,layer1,layer2;
 
+    // music
+    MusicPlayer music;
 
     private TiledMapTile filledTile;
     public boolean aPressed = false;
@@ -32,6 +35,9 @@ public class PlayScreen implements Screen, InputProcessor{
     private Vector3 playerPos = new Vector3();
     public PlayScreen(CaveGame game){
         cg = new CaveGenerator(40,100);
+
+        music = new MusicPlayer(cg.SEED);
+        music.pumpUpTheMusic();
 
         this.game = game;
         camera = new OrthographicCamera();
@@ -64,6 +70,8 @@ public class PlayScreen implements Screen, InputProcessor{
 
     @Override
     public void render(float delta) {
+        music.update(delta);
+
         Gdx.gl20.glClearColor(0,0,0,0);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         playerPos.x = player.getX();
@@ -169,7 +177,7 @@ public class PlayScreen implements Screen, InputProcessor{
 
     @Override
     public void dispose() {
-
+        music.turnDownForWhat();
     }
 
     @Override
