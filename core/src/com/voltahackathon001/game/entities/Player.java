@@ -177,7 +177,23 @@ public class Player extends Sprite{
         setX(pos.x);
         setY(pos.y);
 
+        //TODO: REMOVE
+        if (screen.leftPressed) {
+            pos.x -= 10;
+            setX(pos.x);
+        } else if (screen.rightPressed) {
+            pos.x += 10;
+            setX(pos.x);
+        } else if (screen.upPressed) {
+            pos.y += 10;
+            setY(pos.y);
+        } else if (screen.downPressed) {
+            pos.y -= 10;
+            setY(pos.y);
+        }
     }
+
+
 
     public boolean collidesLeft(){
         if(screen.isCellBlocked(pos.x, pos.y)){

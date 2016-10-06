@@ -29,6 +29,10 @@ public class PlayScreen implements Screen, InputProcessor{
     private TiledMapTile filledTile;
     public boolean aPressed = false;
     public boolean dPressed = false;
+    public boolean leftPressed = false;
+    public boolean rightPressed = false;
+    public boolean upPressed = false;
+    public boolean downPressed = false;
 
     private Vector3 playerPos = new Vector3();
 
@@ -91,7 +95,6 @@ public class PlayScreen implements Screen, InputProcessor{
 
         camera.project(playerPos);
 
-        // update player (updates things like animations, velocity, accel etc)
         player.update(delta);
 
         // Move camera if the player is on camera bounds
@@ -139,6 +142,16 @@ public class PlayScreen implements Screen, InputProcessor{
             //map.getLayers().remove(1);
             map.getLayers().add(collisionLayer);
         }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = true;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = true;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = true;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = true;
+        }
         return false;
     }
 
@@ -149,6 +162,16 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = false;
+        }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = false;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = false;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = false;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = false;
         }
         return false;
     }
