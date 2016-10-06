@@ -89,28 +89,38 @@ public class CaveGenerator {
         fillSides(cave);
         fillBottom(cave);
         clearHorizLayer(cave, height-2);
+
         return cave;
+
     }
 
     // gets the first cave and returns a 2D int array
     public int[][] getCaveInt(){
         int[][] returnMe = new int[width][height];
-        getCave();
-        for(int x = 0 ; x < width ; x++){
-            for(int y = 0 ; y < height ; y++){
-                returnMe[x][y] = cave[x][y].getState();
+        while (true) {
+            getCave();
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    returnMe[x][y] = cave[x][y].getState();
+                }
             }
+            if (GenVerification.validCave(returnMe))
+                break;
         }
         return returnMe;
     }
     // converts getNext cave into a 2D int array and returns it
     public int[][] getNextInt(){
         int[][] returnMe = new int[width][height];
-        getNext();
-        for(int x = 0 ; x < width ; x++){
-            for(int y = 0 ; y < width ; y++){
-                returnMe[x][y] = cave[x][y].getState();
+        while (true) {
+            getNext();
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    returnMe[x][y] = cave[x][y].getState();
+                }
             }
+            if (GenVerification.validCave(returnMe))
+                break;
         }
         return returnMe;
     }
@@ -119,19 +129,16 @@ public class CaveGenerator {
      * @return A 2D Cell array representing the cave to load on top of the current one.
      */
     public Cell[][] getNext() {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                nextCave[i][j].setState(0);
-            }
-        }
         populate(nextCave);
         fillNextBottom();
         blank(nextCave);
         for (int i = 0; i < numSteps; i++) {
             step(nextCave);
         }
+
         fillSides(nextCave);
-        clearHorizLayer(cave, height-1);
+        clearHorizLayer(nextCave, height - 1);
+
         cave = nextCave;
         return cave;
     }
@@ -171,7 +178,6 @@ public class CaveGenerator {
     private void blank(Cell[][] cellArray) {
         //variety of options for blanks to diversify levels
         double r = random.nextDouble();
-        r = 0.9;
         if (r < 0.2) {
             //vertical blanks
             for (int j = 0; j < height/3; j++) {
