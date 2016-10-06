@@ -358,6 +358,7 @@ public class PlayScreen implements Screen, InputProcessor{
         jumpermanAtlas.dispose();
         map.dispose();
         background.dispose();
+        player.dispose();
     }
 
     @Override

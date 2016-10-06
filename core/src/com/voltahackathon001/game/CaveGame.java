@@ -25,9 +25,11 @@ public class CaveGame extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		this.getScreen().dispose();
 	}
 
 	public void restart(){
+		this.dispose();
 		this.setScreen(new PlayScreen(this));
 	}
 
