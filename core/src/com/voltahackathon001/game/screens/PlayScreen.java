@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -70,6 +71,8 @@ public class PlayScreen implements Screen, InputProcessor{
             cg = new CaveGenerator(40, 100);
         }
 
+        generateName(cg.SEED);
+
         music = new MusicPlayer(cg.SEED);
         music.pumpUpTheMusic();
 
@@ -91,7 +94,7 @@ public class PlayScreen implements Screen, InputProcessor{
 
         // init map to our single tile map
         map = new TmxMapLoader().load("testmap.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, game.batch);
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
 
         // generate layer based on our cave generation
@@ -121,6 +124,10 @@ public class PlayScreen implements Screen, InputProcessor{
 
         // set input processor
         Gdx.input.setInputProcessor(this);
+    }
+
+    private void generateName(long seed){
+
     }
 
     @Override
@@ -180,10 +187,13 @@ public class PlayScreen implements Screen, InputProcessor{
         game.batch.setProjectionMatrix(camera.combined);
 
         // draw the background first
-        drawBackground();
+        //drawBackground();
 
         // set TiledMap renderer view to camera
         renderer.setView(camera);
+        game.batch.begin();
+        renderer.renderImageLayer(new TiledMapImageLayer(new TextureRegion(background), 0, 0));
+        game.batch.end();
         // render tiledMap
         renderer.render();
 
