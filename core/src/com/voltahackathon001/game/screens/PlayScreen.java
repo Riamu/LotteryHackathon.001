@@ -34,6 +34,10 @@ public class PlayScreen implements Screen, InputProcessor{
     private TiledMapTile filledTile;
     public boolean aPressed = false;
     public boolean dPressed = false;
+    public boolean leftPressed = false;
+    public boolean rightPressed = false;
+    public boolean upPressed = false;
+    public boolean downPressed = false;
 
     private Vector3 playerPos = new Vector3();
 
@@ -101,7 +105,6 @@ public class PlayScreen implements Screen, InputProcessor{
 
         camera.project(playerPos);
 
-        // update player (updates things like animations, velocity, accel etc)
         player.update(delta);
 
         // Move camera if the player is on camera bounds
@@ -143,6 +146,21 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = true;
+        }else if(keycode == Input.Keys.Q){
+            collisionLayer = nextLayer(cg.getNextInt(),collisionLayer);
+            collisionLayer.setVisible(true);
+            //map.getLayers().remove(1);
+            map.getLayers().add(collisionLayer);
+        }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = true;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = true;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = true;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = true;
         }
         return false;
     }
@@ -154,6 +172,16 @@ public class PlayScreen implements Screen, InputProcessor{
         }
         else if(keycode==Input.Keys.D){
             dPressed = false;
+        }
+        //TODO: REMOVE
+        else if(keycode==Input.Keys.LEFT) {
+            leftPressed = false;
+        } else if(keycode==Input.Keys.RIGHT) {
+            rightPressed = false;
+        } else if(keycode==Input.Keys.UP) {
+            upPressed = false;
+        } else if (keycode==Input.Keys.DOWN) {
+            downPressed = false;
         }
         return false;
     }
@@ -182,6 +210,30 @@ public class PlayScreen implements Screen, InputProcessor{
                     returnMe.getCell(x, 99-y).setTile(filledTile); // add a new tile to that cell
                 }
 
+            }
+        }
+        return returnMe;
+    }
+    // get layers after the initial layer
+    public TiledMapTileLayer nextLayer(int[][] caveArray, TiledMapTileLayer oldLayer){
+        TiledMapTileLayer returnMe =
+                new TiledMapTileLayer(caveArray.length+oldLayer.getWidth(),caveArray[0].length+oldLayer.getHeight(),32,32);
+        for(int x = 0 ; x < oldLayer.getWidth(); x++){
+            for(int y = 0 ; y < oldLayer.getHeight() ; y++){
+                if(oldLayer.getCell(x,y)!=null){
+                    returnMe.setCell(x, returnMe.getHeight()-1, new TiledMapTileLayer.Cell());
+                    returnMe.getCell(x, returnMe.getHeight()-1).setTile(filledTile);
+                }
+
+            }
+        }
+        for(int x = oldLayer.getWidth() ; x < oldLayer.getWidth() ; x++){
+            for(int y = oldLayer.getHeight() ; y < oldLayer.getHeight()+caveArray[x].length ; y++){
+                if(caveArray[x][y]==1) {
+                    // Y values have to be reversed because libGDX is y-up and this array is y-down
+                    returnMe.setCell(x, returnMe.getHeight()-y,new TiledMapTileLayer.Cell()); // create a new cell
+                    returnMe.getCell(x, returnMe.getHeight()-y).setTile(filledTile); // add a new tile to that cell
+                }
             }
         }
         return returnMe;

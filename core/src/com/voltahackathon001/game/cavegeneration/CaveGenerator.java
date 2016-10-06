@@ -131,6 +131,7 @@ public class CaveGenerator {
             step(nextCave);
         }
         fillSides(nextCave);
+        clearHorizLayer(cave, height-1);
         cave = nextCave;
         return cave;
     }
@@ -170,6 +171,7 @@ public class CaveGenerator {
     private void blank(Cell[][] cellArray) {
         //variety of options for blanks to diversify levels
         double r = random.nextDouble();
+        r = 0.9;
         if (r < 0.2) {
             //vertical blanks
             for (int j = 0; j < height/3; j++) {
@@ -207,7 +209,7 @@ public class CaveGenerator {
             double heightStep = (double)height / width;
             double j = 0;
             for (int i = 0; i < width; i++) {
-                for (int k = -2; k < 2; k++) {
+                for (int k = -6; k < 6; k++) {
                     int y = (int)j+k;
                     if (y < 0 || y > height-2) {
                         continue;
@@ -221,7 +223,7 @@ public class CaveGenerator {
             double heightStep = (double)height / width;
             double j = 0;
             for (int i = width-1; i > 0; i--) {
-                for (int k = -2; k < 2; k++) {
+                for (int k = -6; k < 6; k++) {
                     int y = (int)j+k;
                     if (y < 0 || y > height-2) {
                         continue;
@@ -263,7 +265,9 @@ public class CaveGenerator {
                     //horizontal blank
                     cellArray[i][height/2+k].setState(0);
                     cellArray[i][height/2+k].setNextState(0);
+                }
 
+                for (int k = -5; k < 5; k++) {
                     //upper diagonal
                     int y = (int)j+k;
                     if (y < 0) {
