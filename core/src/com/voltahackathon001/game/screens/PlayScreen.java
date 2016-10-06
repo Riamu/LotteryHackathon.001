@@ -131,7 +131,7 @@ public class PlayScreen implements Screen, InputProcessor{
         elapsedTime+=delta;
 
         // check if player is above the midpoint of the layer
-        if(player.getX()>collisionLayer.getHeight()/numOfChunks){
+        if(player.getY()>(collisionLayer.getHeight()*16-(50*16))){
             addNewChunk();
         }
         // flush screen
@@ -267,12 +267,6 @@ public class PlayScreen implements Screen, InputProcessor{
     public TiledMapTileLayer nextLayer(int[][] caveArray, TiledMapTileLayer oldLayer){
         TiledMapTileLayer returnMe = new TiledMapTileLayer(oldLayer.getWidth(),oldLayer.getHeight()+caveArray[0].length,32,32);
 
-        for(int x=0 ; x < caveArray.length ; x++){
-            for(int y=0 ; y<caveArray[x].length ; y++){
-                System.out.print(""+caveArray[x][y]);
-            }
-            System.out.println();
-        }
         for(int x = 0 ; x < oldLayer.getWidth() ; x++){
             for(int y = 0 ; y < oldLayer.getHeight() ; y++){
                 if(oldLayer.getCell(x,y)!=null){
@@ -290,7 +284,7 @@ public class PlayScreen implements Screen, InputProcessor{
                 }
             }
         }
-        Gdx.app.log("(x,y): ","("+returnMe.getWidth()+","+returnMe.getHeight()+")");
+        //Gdx.app.log("(x,y): ","("+returnMe.getWidth()+","+returnMe.getHeight()+")");
         return returnMe;
     }
 
@@ -301,6 +295,7 @@ public class PlayScreen implements Screen, InputProcessor{
         map.getLayers().add(newLayer);
         collisionLayer = newLayer;
         numOfChunks++;
+        Gdx.app.log("gened a new chunk",player.getX()+","+player.getY());
     }
     @Override
     public void show() {
