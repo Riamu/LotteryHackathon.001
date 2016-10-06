@@ -27,7 +27,7 @@ public class PlayScreen implements Screen, InputProcessor{
     private Player player;
     private CaveGenerator cg;
     public TiledMapTileLayer collisionLayer;
-    private TiledMapTileLayer layer0,layer1,layer2;
+    private TiledMapTileLayer layer1,bottomLayer;
 
     // music
     MusicPlayer music;
@@ -94,14 +94,15 @@ public class PlayScreen implements Screen, InputProcessor{
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
 
         // generate layer based on our cave generation
-        filledTile = collisionLayer.getCell(0,0).getTile();
+        bottomLayer = (TiledMapTileLayer)map.getLayers().get(0);
+        filledTile = bottomLayer.getCell(0,0).getTile();
         layer1 = nextLayer(cg.getCaveInt());
         // add our layer to the map
         map.getLayers().add(layer1);
         // set our collision layer to the layer we added
         collisionLayer = layer1;
         // set layer 0 to invisible
-        map.getLayers().get(0).setVisible(false);
+        //map.getLayers().get(0).setVisible(false);
 
         //add player
         float y = collisionLayer.getTileHeight();
@@ -204,10 +205,7 @@ public class PlayScreen implements Screen, InputProcessor{
         else if(keycode==Input.Keys.D){
             dPressed = true;
         }else if(keycode == Input.Keys.Q){
-            collisionLayer = nextLayer(cg.getNextInt(),collisionLayer);
-            collisionLayer.setVisible(true);
-            //map.getLayers().remove(1);
-            map.getLayers().add(collisionLayer);
+            addNewChunk();
         }
         //TODO: REMOVE
         else if(keycode==Input.Keys.LEFT) {
@@ -275,29 +273,34 @@ public class PlayScreen implements Screen, InputProcessor{
     }
     // get layers after the initial layer
     public TiledMapTileLayer nextLayer(int[][] caveArray, TiledMapTileLayer oldLayer){
-        TiledMapTileLayer returnMe =
-                new TiledMapTileLayer(caveArray.length+oldLayer.getWidth(),caveArray[0].length+oldLayer.getHeight(),32,32);
-        for(int x = 0 ; x < oldLayer.getWidth(); x++){
+        TiledMapTileLayer returnMe = new TiledMapTileLayer(oldLayer.getWidth(),oldLayer.getHeight(),32,32);
+
+        for(int x = 0 ; x < oldLayer.getWidth() ; x++){
             for(int y = 0 ; y < oldLayer.getHeight() ; y++){
                 if(oldLayer.getCell(x,y)!=null){
-                    returnMe.setCell(x, returnMe.getHeight()-1, new TiledMapTileLayer.Cell());
-                    returnMe.getCell(x, returnMe.getHeight()-1).setTile(filledTile);
+                    returnMe.setCell(x,y, new TiledMapTileLayer.Cell());
+                    returnMe.getCell(x,y).setTile(filledTile);
                 }
-
             }
         }
-        for(int x = oldLayer.getWidth() ; x < oldLayer.getWidth() ; x++){
-            for(int y = oldLayer.getHeight() ; y < oldLayer.getHeight()+caveArray[x].length ; y++){
-                if(caveArray[x][y]==1) {
-                    // Y values have to be reversed because libGDX is y-up and this array is y-down
-                    returnMe.setCell(x, returnMe.getHeight()-y,new TiledMapTileLayer.Cell()); // create a new cell
-                    returnMe.getCell(x, returnMe.getHeight()-y).setTile(filledTile); // add a new tile to that cell
+        for(int x = oldLayer.getWidth() ; x < caveArray.length ; x++){
+            for(int y = oldLayer.getHeight() ; y < caveArray[x].length ; y++){
+                if(caveArray[x][y] == 1){
+                    returnMe.setCell(x, returnMe.getHeight()-y, new TiledMapTileLayer.Cell());
+                    returnMe.getCell(x, returnMe.getHeight()-y).setTile(filledTile);
                 }
             }
         }
         return returnMe;
     }
 
+    public void addNewChunk(){
+        TiledMapTileLayer tempLayer = (TiledMapTileLayer)map.getLayers().get(1);
+        TiledMapTileLayer newLayer = (nextLayer(cg.getNextInt(), tempLayer));
+        map.getLayers().remove(1);
+        map.getLayers().add(newLayer);
+        collisionLayer = newLayer;
+    }
     @Override
     public void show() {
 
