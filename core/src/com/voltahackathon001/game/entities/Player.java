@@ -251,4 +251,8 @@ public class Player extends Sprite{
                 "AccY: "+accel.y
                 );
     }
+
+    public void dispose(){
+        jumpermanAtlas.dispose();
+    }
 }
