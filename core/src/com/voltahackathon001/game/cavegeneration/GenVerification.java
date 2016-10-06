@@ -11,12 +11,20 @@ public class GenVerification {
      * @return True if array has clear path to top.
      */
     public static boolean validCave(int[][] caveArray) {
-        int width = caveArray.length;
-        int height = caveArray[0].length;
+        int[][] clone = new int[caveArray.length][caveArray[0].length];
+
+        int width = clone.length;
+        int height = clone[0].length;
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                clone[i][j] = caveArray[i][j];
+            }
+        }
 
         //don't check side walls
         for (int i = 1; i < width-1; i++) {
-            if (validate(caveArray, i, 0))
+            if (validate(clone, i, 0))
                 return true;
         }
 
