@@ -115,7 +115,7 @@ public class CaveGenerator {
         while (true) {
             getNext();
             for (int x = 0; x < width; x++) {
-                for (int y = 0; y < width; y++) {
+                for (int y = 0; y < height; y++) {
                     returnMe[x][y] = cave[x][y].getState();
                 }
             }
@@ -135,6 +135,7 @@ public class CaveGenerator {
         for (int i = 0; i < numSteps; i++) {
             step(nextCave);
         }
+
         fillSides(nextCave);
         clearHorizLayer(nextCave, height - 1);
 
