@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.*;
@@ -20,6 +21,12 @@ import com.voltahackathon001.game.cavegeneration.Cell;
 import com.voltahackathon001.game.entities.Player;
 import com.voltahackathon001.game.music.MusicPlayer;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
 public class PlayScreen implements Screen, InputProcessor{
     private OrthographicCamera camera;
     private CaveGame game;
@@ -29,6 +36,11 @@ public class PlayScreen implements Screen, InputProcessor{
     private CaveGenerator cg;
     public TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer layer1,bottomLayer;
+    private static ArrayList<String> adjs;
+    private static ArrayList<String> nouns;
+    private String levelName;
+
+    private BitmapFont font;
 
     private float numOfChunks = 1;
     // music
@@ -51,6 +63,8 @@ public class PlayScreen implements Screen, InputProcessor{
 
     // PlayScreen constructor initializes our Game World and such
     public PlayScreen(CaveGame game){
+        loadWordsForTitle();
+        font = new BitmapFont();
         // for now check if the clipboard contains a long (and assume it's a seed), later move
         // this to the menu
         boolean foundSeed = false;
@@ -98,6 +112,7 @@ public class PlayScreen implements Screen, InputProcessor{
         collisionLayer = (TiledMapTileLayer)map.getLayers().get(0);
 
         // generate layer based on our cave generation
+
         bottomLayer = (TiledMapTileLayer)map.getLayers().get(0);
         filledTile = bottomLayer.getCell(0,0).getTile();
         layer1 = nextLayer(cg.getCaveInt());
@@ -126,8 +141,28 @@ public class PlayScreen implements Screen, InputProcessor{
         Gdx.input.setInputProcessor(this);
     }
 
-    private void generateName(long seed){
+    private void loadWordsForTitle(){
+        try {
+            adjs = new ArrayList<String>();
+            nouns = new ArrayList<String>();
+            Scanner file = new Scanner(new File("adjectives.txt"));
+            while(file.hasNext()){
+                adjs.add(file.nextLine());
+            }
+            file.close();
+            file = new Scanner(new File("nouns.txt"));
+            while(file.hasNext()){
+                nouns.add(file.nextLine());
+            }
+            file.close();
+        }catch(FileNotFoundException e){
+            System.err.println("no");
+        }
+    }
 
+    private void generateName(long seed){
+        Random rand = new Random(seed);
+        levelName = adjs.get(rand.nextInt(adjs.size())) + " " + adjs.get(rand.nextInt(adjs.size())) + " " + nouns.get(rand.nextInt(nouns.size()));
     }
 
     @Override
@@ -173,26 +208,24 @@ public class PlayScreen implements Screen, InputProcessor{
         game.batch.setProjectionMatrix(camera.combined);
 
         // draw the background first
-        //drawBackground();
+        drawBackground();
 
         // set TiledMap renderer view to camera
         renderer.setView(camera);
-        game.batch.begin();
-        renderer.renderImageLayer(new TiledMapImageLayer(new TextureRegion(background), 0, 0));
-        game.batch.end();
         // render tiledMap
         renderer.render();
 
         // Draw things
         game.batch.begin();
-            game.batch.draw(player.getAnimation().getKeyFrame(elapsedTime, true),player.getX(),player.getY());
+            game.batch.draw(player.getAnimation().getKeyFrame(elapsedTime, true), player.getX(), player.getY());
+            font.draw(game.batch, levelName, 0, 0);
         game.batch.end();
     }
 
     private void drawBackground(){
         game.batch.begin();
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        game.batch.draw(background,0,0);
+        game.batch.draw(background,-1000,-1000,-1000 - (int)camera.position.x,-1000 + (int)camera.position.y,5000,5000);
         game.batch.end();
     }
 
@@ -214,6 +247,8 @@ public class PlayScreen implements Screen, InputProcessor{
             music.switchItUp();
         }else if(keycode == Input.Keys.ESCAPE){
             Gdx.app.exit();
+        }else if(keycode == Input.Keys.P){
+            game.restart();
         }
         return false;
     }
