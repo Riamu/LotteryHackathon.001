@@ -5,6 +5,8 @@
 Jumperman can jump off of walls to reach the top of the level - except the levels are infinite and procedurally generated. Have fun!
 
 Fun Society was composed of:
-Liam Hartery
-Nick Burris
-Amelia Stead
+<ul>
+<li> Nick Burris </li>
+<li> Liam Hartery </li>
+<li> Amelia Stead </li>
+</ul>
